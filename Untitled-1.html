@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>2-Person Chat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    #chatContainer {
+      width: 90%;
+      max-width: 600px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: white;
+      overflow: hidden;
+    }
+
+    #messageList {
+      height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    #inputContainer {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #ccc;
+    }
+
+    #messageInput {
+      flex-grow: 1;
+      border: none;
+      outline: none;
+      font-size: 16px;
+    }
+
+    #cameraIcon {
+      width: 32px;
+      height: 32px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="chatContainer">
+    <div id="messageList"></div>
+    <div id="inputContainer">
+      <input type="text" id="messageInput" placeholder="Type a message...">
+      <label for="imageInput">
+        <img src="camera-icon.png" alt="Send Photo" id="cameraIcon">
+      </label>
+      <input type="file" id="imageInput" accept="image/*" style="display:none">
+    </div>
+  </div>
+  <script>
+    const messageList = document.getElementById('messageList');
+    const messageInput = document.getElementById('messageInput');
+    const imageInput = document.getElementById('imageInput');
+
+    messageInput.addEventListener('keypress', (event) => {
+      if (event.key === 'Enter') {
+        const message = event.target.value;
+        addMessage('text', message);
+        event.target.value = '';
+      }
+    });
+
+    imageInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        addMessage('image', e.target.result);
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    function addMessage(type, content) {
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('message');
+
+      if (type === 'text') {
+        const textElement = document.createElement('p');
+        textElement.textContent = content;
+        messageElement.appendChild(textElement);
+      } else if (type === 'image') {
+        const imageElement = document.createElement('img');
+        imageElement.src = content;
+        imageElement.alt = 'Sent Image';
+        imageElement.style.maxWidth = '100%';
+        messageElement.appendChild(imageElement);
+      }
+
+      messageList.appendChild(messageElement);
+      messageList.scrollTop = messageList.scrollHeight;
+    }
+  </script>
+</body>
+</html>
